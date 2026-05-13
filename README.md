@@ -29,10 +29,10 @@ Built for the Yuno *Seoul Chargeback Tsunami* backend challenge.
 
 The service is deployed on Railway with automatic seed on first deploy. The seed is **idempotent** — restarts will not delete or duplicate data.
 
-### How to evaluate in 2 minutes
+### How to evaluate
 
 1. Open **[`/docs`](https://hanamart-chargeback-production.up.railway.app/docs)** to access Swagger UI
-2. Execute `POST /chargebacks` with the example payload (provided in Swagger or the landing page)
+2. Execute `POST /chargebacks` with the example payload provided in Swagger
 3. Copy the returned `id`, then call `GET /chargebacks/{id}/risk`
 4. Call `GET /fraud-patterns` to see seeded patterns
 5. (Optional) `GET /fraud-patterns/{id}` to inspect a pattern's linked disputes
@@ -53,7 +53,7 @@ npm run dev                 # starts on :3000
 
 Then open:
 
-- **`http://localhost:3000`** — landing page with Quick Start guide, example payload, and every endpoint mapped to its challenge requirement.
+- **`http://localhost:3000`** — landing page with Quick Start guide and every endpoint mapped to its challenge requirement.
 - **`http://localhost:3000/docs`** — Swagger UI with full request/response schemas and natural-language descriptions for every endpoint.
 
 ---

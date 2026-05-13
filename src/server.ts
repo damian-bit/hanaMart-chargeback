@@ -49,35 +49,13 @@ export async function buildApp() {
     <p class="subtitle">API running at http://localhost:${env.PORT}</p>
     <p class="subtitle" style="margin-top: -1rem;">🔗 Production: <a href="https://hanamart-chargeback-production.up.railway.app/" target="_blank" style="color:#58a6ff;">hanamart-chargeback-production.up.railway.app</a> &nbsp;·&nbsp; <a href="/docs" style="color:#58a6ff;">📖 Swagger Docs</a></p>
 
-    <div class="section-title" style="margin-top: 1.5rem;">⚡ Quick Start — Evaluate in 2 minutes</div>
+    <div class="section-title" style="margin-top: 1.5rem;">⚡ Quick Start</div>
     <div class="card" style="display: block; border-color: #1f6feb;">
       <ol style="margin: 0.5rem 0 0.5rem 1.2rem; color: #c9d1d9; line-height: 1.8; font-size: 0.85rem;">
-        <li><strong>Step 1</strong> — Open <a href="/docs" style="color:#58a6ff;">/docs</a> (Swagger UI) and execute <code>POST /chargebacks</code> with the payload below</li>
+        <li><strong>Step 1</strong> — Open <a href="/docs" style="color:#58a6ff;">/docs</a> (Swagger UI) and execute <code>POST /chargebacks</code></li>
         <li><strong>Step 2</strong> — Copy the returned <code>id</code> and call <code>GET /chargebacks/&#123;id&#125;/risk</code> to see risk score & evidence</li>
         <li><strong>Step 3</strong> — Call <code>GET /fraud-patterns</code> to verify detected fraud patterns</li>
       </ol>
-    </div>
-
-    <div class="section-title">📋 Example payload for Swagger / cURL</div>
-    <div class="card" style="display: block; border-color: #30363d;">
-      <pre style="font-size: 0.72rem; color: #8b949e; overflow-x: auto; margin: 0.3rem 0; line-height: 1.5;">{
-  "disputeId": "CB-DEMO-001",
-  "transactionId": "TXN-DEMO-001",
-  "amount": 149.99,
-  "currency": "USD",
-  "reasonCodeRaw": "4853",
-  "reasonText": "Item arrived damaged, not as described",
-  "cardholderName": "Kim Ji-woo",
-  "cardholderEmail": "kim.jiwoo@example.com",
-  "shippingAddress": "123 Gangnam-daero, Seoul",
-  "ipAddress": "203.0.113.45",
-  "orderDate": "2026-05-01T10:00:00Z",
-  "filingDate": "2026-05-10T00:00:00Z",
-  "responseDeadline": "2026-05-24T00:00:00Z",
-  "hasTrackingNumber": true,
-  "avsMatch": true
-}</pre>
-      <p style="font-size: 0.75rem; color: #6e7681;">Then run: <code>curl -X POST http://localhost:${env.PORT}/chargebacks -H 'content-type: application/json' -d @payload.json</code></p>
     </div>
 
     <div class="section-title">📖 Documentation</div>
