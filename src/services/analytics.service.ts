@@ -47,7 +47,7 @@ export async function getWinRateByCategory() {
 
 export async function getAvgResponseTime() {
   const chargebacks = await prisma.chargeback.findMany({
-    where: { status: 'RESPONDED', respondedAt: { not: null } },
+    where: { respondedAt: { not: null }, status: { in: ['RESPONDED', 'WON', 'LOST'] } },
     select: { filingDate: true, respondedAt: true },
   });
 

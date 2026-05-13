@@ -65,7 +65,7 @@ export default async function analyticsRoutes(app: FastifyInstance) {
 
   app.get('/analytics/avg-response-time', {
     schema: {
-      description: 'Returns the average number of days between a chargeback being filed and HanaMart submitting a response, across all responded disputes.',
+      description: 'Returns the average number of days between filing and response timestamp across disputes that already have respondedAt (RESPONDED, WON, LOST).',
       tags: ['Analytics'],
       response: {
         200: {
