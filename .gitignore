@@ -1,0 +1,14 @@
+# Node
+node_modules/
+dist/
+build/
+coverage/
+*.log
+npm-debug.log*
+
+# Prisma local databases
+*.db
+*.db-journal
+
+# Environment variables
+# Maneja el archivo .env según lo indicado en el README o crea uno automáticamente en la primera ejecución.

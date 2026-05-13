@@ -1,0 +1,32 @@
+{
+  "name": "hanamrt-chargeback",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate && tsc",
+    "start": "node dist/server.js",
+    "seed": "tsx src/seed/seed.ts",
+    "seed:prod": "node dist/seed/seed.js",
+    "postinstall": "prisma generate",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.3.0",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.0",
+    "pino": "^9.6.0",
+    "prisma": "^5.22.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

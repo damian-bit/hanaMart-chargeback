@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Chargeback {
+  id                  String   @id @default(cuid())
+  disputeId           String   @unique
+  transactionId       String   @unique
+  amountMinor         Int
+  currency            String   @default("USD")
+  reasonCodeRaw       String?
+  reasonText          String?
+  category            String
+  cardholderName      String
+  cardholderEmail     String
+  emailDomain         String
+  shippingAddress     String
+  shippingAddressNorm String
+  ipAddress           String?
+  orderDate           DateTime
+  filingDate          DateTime
+  responseDeadline    DateTime
+  status              String
+  respondedAt         DateTime?
+  riskScore           Int?
+  recommendation      String?
+  createdAt           DateTime @default(now())
+
+  patternLinks FraudPatternDispute[]
+
+  @@index([shippingAddressNorm])
+  @@index([emailDomain])
+  @@index([ipAddress])
+  @@index([filingDate])
+  @@index([amountMinor])
+  @@index([category, status])
+}
+
+model FraudPattern {
+  id               String   @id @default(cuid())
+  type             String
+  signature        String
+  description      String
+  disputeCount     Int      @default(0)
+  totalAmountMinor Int      @default(0)
+  firstSeen        DateTime
+  lastSeen         DateTime
+  createdAt        DateTime @default(now())
+
+  disputes FraudPatternDispute[]
+  @@unique([type, signature])
+}
+
+model FraudPatternDispute {
+  patternId    String
+  chargebackId String
+  pattern      FraudPattern @relation(fields: [patternId], references: [id])
+  chargeback   Chargeback   @relation(fields: [chargebackId], references: [id])
+  @@id([patternId, chargebackId])
+}
