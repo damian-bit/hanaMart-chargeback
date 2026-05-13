@@ -4,6 +4,12 @@ import { generateChargebacks } from './generate.js';
 import { runFraudDetection } from '../services/fraud-detection.service.js';
 
 async function main() {
+  const existingCount = await prisma.chargeback.count();
+  if (existingCount > 0) {
+    console.log(`Database already has ${existingCount} chargebacks — skipping seed.`);
+    return;
+  }
+
   console.log('Truncating tables...');
   await prisma.fraudPatternDispute.deleteMany();
   await prisma.fraudPattern.deleteMany();

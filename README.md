@@ -8,6 +8,39 @@ Built for the Yuno *Seoul Chargeback Tsunami* backend challenge.
 
 ---
 
+## Deliverables Summary
+
+| # | Requirement | Delivered | How to verify |
+|---|-------------|-----------|---------------|
+| **Core 1** | Ingest a new chargeback via API, see it correctly categorized and stored | `POST /chargebacks` returns category, urgency, risk score, recommendation, fraud flags | → [Example](#1-core-req-1--ingestion--categorization) |
+| **Core 2** | Retrieve risk assessment and evidence recommendations for any dispute | `GET /chargebacks/:id/risk` returns 0-100 score, factor breakdown, required evidence, FIGHT/ACCEPT | → [Example](#2-core-req-2--risk-scoring--evidence) |
+| **Core 3** | Query fraud patterns and see alerts with associated dispute IDs | `GET /fraud-patterns` lists patterns; `GET /fraud-patterns/:id` links disputes; `POST /fraud-patterns/scan` rebuilds | → [Example](#3-core-req-3--fraud-pattern-detection) |
+| **Stretch A** | Analytics: monthly summary, win rates, avg response time, top fraud patterns | 4 analytics endpoints under `/analytics/` | → [Stretch Goals](#stretch-goals-also-implemented) |
+| **Stretch B** | Simulate evidence auto-fetch from external systems | `POST /chargebacks/:id/evidence/fetch` mock | → [Stretch Goals](#stretch-goals-also-implemented) |
+| **Docs** | Interactive API documentation | Swagger UI at `/docs` with full schemas and descriptions | → Open `/docs` |
+| **Test data** | Pre-seeded chargebacks + fraud patterns for immediate evaluation | `npm run seed` plants ~100 chargebacks + 3 fraud rings | → Run seed, then `GET /chargebacks` |
+| **Architecture** | Clean separation: routes / services / domain / lib | Documented in [Architecture](#architecture) section | → Source layout below |
+
+---
+
+## Production Deployment (Railway)
+
+**Production URL:** [`https://hanamart-chargeback-production.up.railway.app/`](https://hanamart-chargeback-production.up.railway.app/)
+
+The service is deployed on Railway with automatic seed on first deploy. The seed is **idempotent** — restarts will not delete or duplicate data.
+
+### How to evaluate in 2 minutes
+
+1. Open **[`/docs`](https://hanamart-chargeback-production.up.railway.app/docs)** to access Swagger UI
+2. Execute `POST /chargebacks` with the example payload (provided in Swagger or the landing page)
+3. Copy the returned `id`, then call `GET /chargebacks/{id}/risk`
+4. Call `GET /fraud-patterns` to see seeded patterns
+5. (Optional) `GET /fraud-patterns/{id}` to inspect a pattern's linked disputes
+
+> **Note:** The production instance already has seed data from initial deploy. You can still `POST /chargebacks` to add new disputes and they will be automatically categorized, risk-scored, and checked against fraud patterns.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -20,7 +53,7 @@ npm run dev                 # starts on :3000
 
 Then open:
 
-- **`http://localhost:3000`** — landing page listing every endpoint and which part of the challenge it covers.
+- **`http://localhost:3000`** — landing page with Quick Start guide, example payload, and every endpoint mapped to its challenge requirement.
 - **`http://localhost:3000/docs`** — Swagger UI with full request/response schemas and natural-language descriptions for every endpoint.
 
 ---
@@ -191,8 +224,64 @@ npm test
 
 ---
 
+## Evidence Checklist
+
+### Build & Tests
+
+```bash
+# 1. Build compiles without errors (no P1012)
+npm run build
+
+# 2. All tests pass (unit + integration)
+npm test
+```
+
+**Expected:** exit code 0 on both.
+
+### Critical endpoints (local or production)
+
+Replace `http://localhost:3000` with `https://hanamart-chargeback-production.up.railway.app` for production smoke tests.
+
+```bash
+# Health
+curl http://localhost:3000/health
+
+# Docs available
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/docs
+
+# Seed data exists
+curl -s http://localhost:3000/chargebacks | jq '.chargebacks | length'
+
+# Risk assessment (replace :id with a real ID)
+curl http://localhost:3000/chargebacks/<id>/risk | jq '{riskScore, recommendation, requiredEvidence}'
+
+# Fraud patterns
+curl http://localhost:3000/fraud-patterns | jq '.patterns[].type'
+
+# Analytics
+curl "http://localhost:3000/analytics/summary?month=2026-04"
+```
+
+### Error robustness
+
+```bash
+# 422 — invalid payload
+curl -X POST http://localhost:3000/chargebacks -H 'content-type: application/json' -d '{}'
+
+# 409 — duplicate disputeId
+curl -X POST http://localhost:3000/chargebacks -H 'content-type: application/json' \
+  -d '{"disputeId":"DUPE","transactionId":"T1","amount":10,"currency":"USD","reasonCodeRaw":"4853","reasonText":"test","cardholderName":"N","cardholderEmail":"e@e.com","emailDomain":"e.com","shippingAddress":"A","shippingAddressNorm":"a","orderDate":"2026-05-10","filingDate":"2026-05-10","responseDeadline":"2026-05-24","status":"OPEN","category":"FRAUD"}'
+
+# 404 — non-existent ID
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/chargebacks/nonexistent/risk
+```
+
+**Expected:** 422 for invalid body, 409 for duplicate, 404 for missing resource.
+
+---
+
 ## API reference
 
-Full interactive documentation: **`http://localhost:3000/docs`**
+Full interactive documentation: **`http://localhost:3000/docs`** or **production [`/docs`](https://hanamart-chargeback-production.up.railway.app/docs)**
 
 Every endpoint has a natural-language description, full request/response schema, and the homepage at `/` maps each route to the exact challenge requirement it covers.

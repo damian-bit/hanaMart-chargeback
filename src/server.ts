@@ -44,9 +44,41 @@ export async function buildApp() {
   </style>
 </head>
 <body>
-  <div class="container">
+    <div class="container">
     <h1>🔁 HanaMart Chargeback Triage</h1>
     <p class="subtitle">API running at http://localhost:${env.PORT}</p>
+    <p class="subtitle" style="margin-top: -1rem;">🔗 Production: <a href="https://hanamart-chargeback-production.up.railway.app/" target="_blank" style="color:#58a6ff;">hanamart-chargeback-production.up.railway.app</a> &nbsp;·&nbsp; <a href="/docs" style="color:#58a6ff;">📖 Swagger Docs</a></p>
+
+    <div class="section-title" style="margin-top: 1.5rem;">⚡ Quick Start — Evaluate in 2 minutes</div>
+    <div class="card" style="display: block; border-color: #1f6feb;">
+      <ol style="margin: 0.5rem 0 0.5rem 1.2rem; color: #c9d1d9; line-height: 1.8; font-size: 0.85rem;">
+        <li><strong>Step 1</strong> — Open <a href="/docs" style="color:#58a6ff;">/docs</a> (Swagger UI) and execute <code>POST /chargebacks</code> with the payload below</li>
+        <li><strong>Step 2</strong> — Copy the returned <code>id</code> and call <code>GET /chargebacks/&#123;id&#125;/risk</code> to see risk score & evidence</li>
+        <li><strong>Step 3</strong> — Call <code>GET /fraud-patterns</code> to verify detected fraud patterns</li>
+      </ol>
+    </div>
+
+    <div class="section-title">📋 Example payload for Swagger / cURL</div>
+    <div class="card" style="display: block; border-color: #30363d;">
+      <pre style="font-size: 0.72rem; color: #8b949e; overflow-x: auto; margin: 0.3rem 0; line-height: 1.5;">{
+  "disputeId": "CB-DEMO-001",
+  "transactionId": "TXN-DEMO-001",
+  "amount": 149.99,
+  "currency": "USD",
+  "reasonCodeRaw": "4853",
+  "reasonText": "Item arrived damaged, not as described",
+  "cardholderName": "Kim Ji-woo",
+  "cardholderEmail": "kim.jiwoo@example.com",
+  "shippingAddress": "123 Gangnam-daero, Seoul",
+  "ipAddress": "203.0.113.45",
+  "orderDate": "2026-05-01T10:00:00Z",
+  "filingDate": "2026-05-10T00:00:00Z",
+  "responseDeadline": "2026-05-24T00:00:00Z",
+  "hasTrackingNumber": true,
+  "avsMatch": true
+}</pre>
+      <p style="font-size: 0.75rem; color: #6e7681;">Then run: <code>curl -X POST http://localhost:${env.PORT}/chargebacks -H 'content-type: application/json' -d @payload.json</code></p>
+    </div>
 
     <div class="section-title">📖 Documentation</div>
     <div class="card"><a href="/docs"><span class="method get">GET</span><span class="path">/docs</span><span class="desc">Swagger UI</span></a><span class="spec">Infrastructure — Auto-generated OpenAPI documentation for API reference</span></div>
@@ -54,15 +86,15 @@ export async function buildApp() {
     <div class="section-title">💚 System</div>
     <div class="card"><a href="/health"><span class="method get">GET</span><span class="path">/health</span><span class="desc">Server & DB status</span></a><span class="spec">Infrastructure — Health check endpoint for service monitoring</span></div>
 
-    <div class="section-title">🧾 Chargebacks</div>
-    <div class="card"><span class="method post">POST</span><span class="path">/chargebacks</span><span class="desc">Ingest new dispute</span><span class="spec">Core Req 1 — "Build a service that accepts incoming chargeback notifications and automatically parse, store, categorize and calculate response urgency"</span></div>
-    <div class="card"><a href="/chargebacks"><span class="method get">GET</span><span class="path">/chargebacks</span><span class="desc">List all</span></a><span class="spec">Core Req 1 — "Return a structured response confirming ingestion and initial classification"</span></div>
+    <div class="section-title">🧾 Chargebacks (Core Req 1)</div>
+    <div class="card" style="border-left: 3px solid #3fb950;"><span class="method post">POST</span><span class="path">/chargebacks</span><span class="desc">Ingest new dispute</span><span class="spec">Core Req 1 — "Build a service that accepts incoming chargeback notifications and automatically parse, store, categorize and calculate response urgency"</span></div>
+    <div class="card" style="border-left: 3px solid #3fb950;"><a href="/chargebacks"><span class="method get">GET</span><span class="path">/chargebacks</span><span class="desc">List all</span></a><span class="spec">Core Req 1 — "Return a structured response confirming ingestion and initial classification"</span></div>
     <div class="card"><span class="method get">GET</span><span class="path">/chargebacks/:id</span><span class="desc">Detail</span><span class="spec">Core Req 1 — Full detail for an individual dispute record</span></div>
-    <div class="card"><span class="method get">GET</span><span class="path">/chargebacks/:id/risk</span><span class="desc">Risk score & evidence</span><span class="spec">Core Req 2 — "Assign a risk score (0-100)… Recommend specific evidence types… Flag whether to fight or accept"</span></div>
+    <div class="card" style="border-left: 3px solid #58a6ff;"><span class="method get">GET</span><span class="path">/chargebacks/:id/risk</span><span class="desc">Risk score & evidence</span><span class="spec">Core Req 2 — "Assign a risk score (0-100)… Recommend specific evidence types… Flag whether to fight or accept"</span></div>
     <div class="card"><span class="method post">POST</span><span class="path">/chargebacks/:id/evidence/fetch</span><span class="desc">Simulate evidence fetch <span class="badge">Stretch</span></span><span class="spec">Stretch B — "Simulate fetching evidence from external systems (mock API calls to a shipping provider or order management system)"</span></div>
 
-    <div class="section-title">🚨 Fraud</div>
-    <div class="card"><a href="/fraud-patterns"><span class="method get">GET</span><span class="path">/fraud-patterns</span><span class="desc">List detected patterns</span></a><span class="spec">Core Req 3 — "Provide an endpoint to query detected fraud patterns"</span></div>
+    <div class="section-title">🚨 Fraud (Core Req 3)</div>
+    <div class="card" style="border-left: 3px solid #f0883e;"><a href="/fraud-patterns"><span class="method get">GET</span><span class="path">/fraud-patterns</span><span class="desc">List detected patterns</span></a><span class="spec">Core Req 3 — "Provide an endpoint to query detected fraud patterns"</span></div>
     <div class="card"><span class="method get">GET</span><span class="path">/fraud-patterns/:id</span><span class="desc">Pattern detail</span><span class="spec">Core Req 3 — "…with the ability to see all disputes associated with a given pattern"</span></div>
     <div class="card"><span class="method post">POST</span><span class="path">/fraud-patterns/scan</span><span class="desc">Re-scan all disputes</span><span class="spec">Core Req 3 — "Generate fraud alerts: when a pattern is detected, create an alert summarizing the pattern and listing all related dispute IDs"</span></div>
 
